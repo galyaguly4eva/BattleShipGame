@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -27,27 +27,28 @@ namespace battleShip
             InitializeComponent();
             RestartGame(); 
         }
+
         private void AttackEnemyPlayer(object sender, EventArgs e)
         {
             if (playerPosition.Count > 0 && rounds > 0)
             {
 
                 rounds--; // уменьшаем колиество раундов
-                roundsText.Text = "Rounds " + rounds; // показывает количество оставшихся раундов
+                roundsText.Text = "Раунды " + rounds; // показывает количество оставшихся раундов
 
                 int index = rand.Next(playerPosition.Count); // создает новый индекс и помещает кнопку ИИ
 
-                if ((string)playerPosition[index].Tag == "playerShip")
+                if ((string)playerPosition[index].Tag == "корабль игрока")
                 {
                     //если попало в корабль
                     playerPosition[index].BackgroundImage = Resource1.fire;
-                    enemyMoves.Text = playerPosition[index].Text;
+                    enemyMoves.Text = "" + playerPosition[index].Text;
                     playerPosition[index].Enabled = false;
                     playerPosition[index].BackColor = Color.DarkBlue;
                     playerPosition.RemoveAt(index);
                     // удаляет кнопку из списка, чтобы процессор больше ее не атаковал 
                     enemyTotalScore++;
-                    enemyScore.Text = enemyTotalScore.ToString();
+                    enemyScore.Text = ""+ enemyTotalScore;
                     enemyPlayTimer.Stop();
                     //останавливает время для процессора
                 }
@@ -86,6 +87,7 @@ namespace battleShip
                 }
             }
         }
+
         private void AttackEnemyPosition(object sender, EventArgs e)
         {
             if (enemyLocationList.Text != "")
@@ -104,14 +106,14 @@ namespace battleShip
                     rounds--;
                     roundsText.Text = "Раунды " + rounds;
 
-                    if ((string)enemyPosition[index].Tag == "enemyship")
+                    if ((string)enemyPosition[index].Tag == "вражеский корабль")
                     {
                         // если игрок попадает в вражеский корабль
                         enemyPosition[index].Enabled = false;
                         enemyPosition[index].BackgroundImage = Resource1.fire;
                         enemyPosition[index].BackColor = Color.DarkBlue;
                         playerTotalScore++;
-                        playerScore.Text =  playerTotalScore.ToString();
+                        playerScore.Text = "" + playerTotalScore;
                         enemyPlayTimer.Start();
                         // начинается таймер для процессора
                     }
@@ -134,6 +136,7 @@ namespace battleShip
             }
 
         }
+
         private void PickingPlayerPosition(object sender, EventArgs e)
         {
             //метод который работает каждый раз, когда игрок начинает выбирать свои корабли
@@ -155,6 +158,7 @@ namespace battleShip
             }
 
         }
+
         private void RestartGame()
         {
             // эта функция загрузит все кнопки в списки, которые мы объявили выше
@@ -214,8 +218,8 @@ namespace battleShip
                         Debug.WriteLine("Позиция противника " + enemyPosition[index].Text);
                       // строка выше покажет нам в окне отладки, какие кнопки выбрал враг
                       // это может помочь нам выяснить, работает ли игра так, как задумано
-                }
-                else
+                    }
+                    else
                     {
                         // если верхнее условие не выполнилось, то мы снова его запускаем пока не будет 3 корабля
                         index = rand.Next(enemyPosition.Count);
