@@ -14,8 +14,9 @@ namespace battleShip
     public partial class MapBattleShip : Form
     {
         List<Button> playerPosition; // листы для того чтобы эффективно и организовать список
-        List<Button> enemyPosition; 
+        List<Button> enemyPosition;
 
+        
         Random rand = new Random(); // мы будем использовать его, чтобы позволить ИИ случайным образом выбрать 3 позиции для массива enemyPosition
 
         int totalShips = 3; // количество кораблей игрока
@@ -201,29 +202,45 @@ namespace battleShip
             PickingEnemyPositions();
 
         }
-
-        private void PickingEnemyPositions()
+        public static IEnumerable<int> GetRandomNumbers(Random rand, List<Button> enemyPosition)
         {
+            HashSet<int> randomNumbers = new HashSet<int>();
+
             for (int i = 0; i < 3; i++)
             {
                 int index = rand.Next(enemyPosition.Count);
-                // выбирается рандомноо кнопка из списка
-                
-                    if (enemyPosition[index].Enabled && rounds > 0)
-                    {
-                        // если кнопка доступна для выбора
-                        enemyPosition[index].Tag = "вражеский корабль";
-                        // добавляет вражеский корабль
+                while (!randomNumbers.Add(rand.Next())) ;
+            }
+            return randomNumbers;
+        }
 
-                        Debug.WriteLine("Позиция противника " + enemyPosition[index].Text);
-                      // строка выше покажет нам в окне отладки, какие кнопки выбрал враг
-                      // это может помочь нам выяснить, работает ли игра так, как задумано
-                    }
-                    else
-                    {
-                        // если верхнее условие не выполнилось, то мы снова его запускаем пока не будет 3 корабля
-                        index = rand.Next(enemyPosition.Count);
-                    }              
+        private void PickingEnemyPositions()
+        {
+            var pickedNumbers = new HashSet<int>();
+
+            for (int i = 0; i < 3; i++)
+            {
+                int index = rand.Next(enemyPosition.Count);
+                while (pickedNumbers.Contains(index))
+                    index = rand.Next(enemyPosition.Count);
+                // выбирается рандомно кнопка из списка без повтора
+
+                if (enemyPosition[index].Enabled && rounds > 0)
+                {
+                    // если кнопка доступна для выбора
+                    enemyPosition[index].Tag = "вражеский корабль";
+                    // добавляет вражеский корабль
+
+                    Debug.WriteLine("Позиция противника " + enemyPosition[index].Text);
+                    // строка выше покажет нам в окне отладки, какие кнопки выбрал враг
+                    // это может помочь нам выяснить, работает ли игра так, как задумано
+                }
+                else
+                {
+                    // если верхнее условие не выполнилось, то мы снова его запускаем пока не будет 3 корабля
+                    index = rand.Next(enemyPosition.Count);
+                }
+                pickedNumbers.Add(index);
             }
         }
     }
